@@ -1,4 +1,4 @@
-CREATE TABLE [dbo].[customers](
+CREATE TABLE [sales].[customers](
     [CustomerID]   NCHAR(5)       NOT NULL,
     [CompanyName]  NVARCHAR(40)   NOT NULL,
     [ContactName]  NVARCHAR(30)   NULL,

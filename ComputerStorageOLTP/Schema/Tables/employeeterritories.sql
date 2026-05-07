@@ -1,4 +1,4 @@
-CREATE TABLE [dbo].[employeeterritories](
+CREATE TABLE [sales].[employeeterritories](
     [EmployeeID]  INT           NOT NULL,
     [TerritoryID] NVARCHAR(20)  NOT NULL,
     [rowversion]  ROWVERSION    NULL,

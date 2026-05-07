@@ -1,4 +1,4 @@
-CREATE TABLE [dbo].[region](
+CREATE TABLE [production].[region](
     [RegionID]          INT           NOT NULL,
     [RegionDescription] NCHAR(50)     NOT NULL,
     [rowversion]        ROWVERSION    NULL,

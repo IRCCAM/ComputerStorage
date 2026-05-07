@@ -1,4 +1,4 @@
-CREATE TABLE [dbo].[suppliers](
+CREATE TABLE [production].[suppliers](
     [SupplierID]   INT            IDENTITY(1,1) NOT NULL,
     [CompanyName]  NVARCHAR(40)   NOT NULL,
     [ContactName]  NVARCHAR(30)   NULL,

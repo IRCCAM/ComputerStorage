@@ -1,4 +1,4 @@
-CREATE TABLE [dbo].[territories](
+CREATE TABLE [production].[territories](
     [TerritoryID]          NVARCHAR(20)  NOT NULL,
     [TerritoryDescription] NCHAR(50)     NOT NULL,
     [RegionID]             INT           NOT NULL,

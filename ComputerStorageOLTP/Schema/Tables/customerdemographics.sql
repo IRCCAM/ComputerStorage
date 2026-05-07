@@ -1,4 +1,4 @@
-CREATE TABLE [dbo].[customerdemographics](
+CREATE TABLE [sales].[customerdemographics](
     [CustomerTypeID] NCHAR(10)      NOT NULL,
     [CustomerDesc]   NVARCHAR(MAX)  NULL,
     [rowversion]     ROWVERSION     NULL,

@@ -1,4 +1,4 @@
-CREATE TABLE [dbo].[orders](
+CREATE TABLE [sales].[orders](
     [OrderID]        INT            IDENTITY(1,1) NOT NULL,
     [CustomerID]     NCHAR(5)       NULL,
     [EmployeeID]     INT            NULL,

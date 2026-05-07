@@ -77,6 +77,20 @@
     <Build Include="Schema\Tables\shippers.sql" />
     <Build Include="Schema\Tables\suppliers.sql" />
     <Build Include="Schema\Tables\territories.sql" />
+    <Build Include="Schema\Security\Schemas\production.sql" />
+    <Build Include="Schema\Security\Schemas\sales.sql" />
+    <Build Include="Schema\Programmability\Stored Procedures\GetCustomerChangesByRowVersion.sql" />
+    <Build Include="Schema\Programmability\Stored Procedures\GetDatabaseRowVersion.sql" />
+    <Build Include="Schema\Programmability\Stored Procedures\GetEmployeeChangesByRowVersion.sql" />
+    <Build Include="Schema\Programmability\Stored Procedures\GetOrderChangesByRowVersion.sql" />
+    <Build Include="Schema\Programmability\Stored Procedures\GetProductChangesByRowVersion.sql" />
+    <Build Include="Schema\Programmability\Stored Procedures\CustOrderHist.sql" />
+    <Build Include="Schema\Programmability\Stored Procedures\CustOrdersDetail.sql" />
+    <Build Include="Schema\Programmability\Stored Procedures\CustOrdersOrders.sql" />
+    <Build Include="Schema\Programmability\Stored Procedures\EmployeeSalesByCountry.sql" />
+    <Build Include="Schema\Programmability\Stored Procedures\SalesByYear.sql" />
+    <Build Include="Schema\Programmability\Stored Procedures\SalesByCategory.sql" />
+    <Build Include="Schema\Programmability\Stored Procedures\TenMostExpensiveProducts.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Scripts\categories.data.sql" />

@@ -1,4 +1,4 @@
-CREATE TABLE [dbo].[products](
+CREATE TABLE [production].[products](
     [ProductID]       INT            IDENTITY(1,1) NOT NULL,
     [ProductName]     NVARCHAR(40)   NOT NULL,
     [SupplierID]      INT            NULL,

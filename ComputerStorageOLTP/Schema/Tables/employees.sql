@@ -1,4 +1,4 @@
-CREATE TABLE [dbo].[employees](
+CREATE TABLE [sales].[employees](
     [EmployeeID]      INT            IDENTITY(1,1) NOT NULL,
     [LastName]        NVARCHAR(20)   NOT NULL,
     [FirstName]       NVARCHAR(10)   NOT NULL,
