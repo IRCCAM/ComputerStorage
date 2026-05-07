@@ -56,5 +56,43 @@
   <Import Condition="'$(SQLDBExtensionsRefPath)' == ''" Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
   <ItemGroup>
     <Folder Include="Properties" />
+    <Folder Include="Schema" />
+    <Folder Include="Schema\Programmability" />
+    <Folder Include="Schema\Programmability\Stored Procedures" />
+    <Folder Include="Schema\Security" />
+    <Folder Include="Schema\Security\Schemas" />
+    <Folder Include="Schema\Tables" />
+    <Folder Include="Scripts" />
+  </ItemGroup>
+  <ItemGroup>
+    <Build Include="Schema\Tables\categories.sql" />
+    <Build Include="Schema\Tables\customers.sql" />
+    <Build Include="Schema\Tables\customerdemographics.sql" />
+    <Build Include="Schema\Tables\employeeterritories.sql" />
+    <Build Include="Schema\Tables\employees.sql" />
+    <Build Include="Schema\Tables\orderdetails.sql" />
+    <Build Include="Schema\Tables\orders.sql" />
+    <Build Include="Schema\Tables\products.sql" />
+    <Build Include="Schema\Tables\region.sql" />
+    <Build Include="Schema\Tables\shippers.sql" />
+    <Build Include="Schema\Tables\suppliers.sql" />
+    <Build Include="Schema\Tables\territories.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Scripts\categories.data.sql" />
+    <None Include="Scripts\customers.data.sql" />
+    <None Include="Scripts\employeeterritories.data.sql" />
+    <None Include="Scripts\employees.data.sql" />
+    <None Include="Scripts\orderdetails.data.sql" />
+    <None Include="Scripts\orders.data.sql" />
+    <None Include="Scripts\products.data.sql" />
+    <None Include="Scripts\region.data.sql" />
+    <None Include="Scripts\shippers.data.sql" />
+    <None Include="Scripts\suppliers.data.sql" />
+    <None Include="Scripts\territories.data.sql" />
+    <None Include="Scripts\clean.data.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <PostDeploy Include="Scripts\Script.PostDeployment.sql" />
   </ItemGroup>
 </Project>
