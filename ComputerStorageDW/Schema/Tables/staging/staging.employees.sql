@@ -1,0 +1,23 @@
+﻿CREATE TABLE [staging].[Employees] (
+    [EmployeeID]      INT           NOT NULL,
+    [LastName]        NVARCHAR(20)  NOT NULL,
+    [FirstName]       NVARCHAR(10)  NOT NULL,
+    [Title]           NVARCHAR(30)  NULL,
+    [TitleOfCourtesy] NVARCHAR(25)  NULL,
+    [BirthDate]       DATETIME      NULL,
+    [HireDate]        DATETIME      NULL,
+    [Address]         NVARCHAR(60)  NULL,
+    [City]            NVARCHAR(15)  NULL,
+    [Region]          NVARCHAR(15)  NULL,
+    [PostalCode]      NVARCHAR(10)  NULL,
+    [Country]         NVARCHAR(15)  NULL,
+    [HomePhone]       NVARCHAR(24)  NULL,
+    [Extension]       NVARCHAR(4)   NULL,
+    [Notes]           NTEXT         NULL,
+    [ReportsTo]       INT           NULL,
+    [PhotoPath]       NVARCHAR(255) NULL,
+    [RowVersion]      BIGINT        NOT NULL,
+    [CreatedDate]     DATETIME      DEFAULT GETDATE(),
+    [ModifiedDate]    DATETIME      DEFAULT GETDATE(),
+    CONSTRAINT [PK_StagingEmployees] PRIMARY KEY CLUSTERED ([EmployeeID] ASC)
+);

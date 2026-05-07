@@ -56,5 +56,52 @@
   <Import Condition="'$(SQLDBExtensionsRefPath)' == ''" Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
   <ItemGroup>
     <Folder Include="Properties" />
+    <Folder Include="Schema" />
+    <Folder Include="Scripts" />
+    <Folder Include="Schema\Programmability" />
+    <Folder Include="Schema\Security" />
+    <Folder Include="Schema\Tables" />
+    <Folder Include="Schema\Tables\dbo" />
+    <Folder Include="Schema\Tables\staging" />
+    <Folder Include="Schema\Programmability\Stored Procedures" />
+    <Folder Include="Schema\Security\schemas" />
+  </ItemGroup>
+  <ItemGroup>
+    <Build Include="Schema\Tables\dbo\FactSales.sql" />
+    <Build Include="Schema\Tables\dbo\DimCustomer.sql" />
+    <Build Include="Schema\Tables\dbo\DimDate.sql" />
+    <Build Include="Schema\Tables\dbo\DimEmployee.sql" />
+    <Build Include="Schema\Tables\dbo\DimProduct.sql" />
+    <Build Include="Schema\Tables\dbo\DimShipper.sql" />
+    <Build Include="Schema\Tables\dbo\DimGeography.sql" />
+    <Build Include="Schema\Security\schemas\staging.sql" />
+    <Build Include="Schema\Tables\dbo\PackageConfig.sql" />
+    <Build Include="Schema\Tables\staging\staging.categories.sql" />
+    <Build Include="Schema\Tables\staging\staging.customers.sql" />
+    <Build Include="Schema\Tables\staging\staging.employees.sql" />
+    <Build Include="Schema\Tables\staging\staging.orderDetails.sql" />
+    <Build Include="Schema\Tables\staging\staging.orders.sql" />
+    <Build Include="Schema\Tables\staging\staging.products.sql" />
+    <Build Include="Schema\Tables\staging\staging.region.sql" />
+    <Build Include="Schema\Tables\staging\staging.shippers.sql" />
+    <Build Include="Schema\Tables\staging\staging.suppliers.sql" />
+    <Build Include="Schema\Tables\staging\staging.territories.sql" />
+    <Build Include="Schema\Programmability\Stored Procedures\DW_MergeDimCustomer.sql" />
+    <Build Include="Schema\Programmability\Stored Procedures\DW_MergeDimDate.sql" />
+    <Build Include="Schema\Programmability\Stored Procedures\DW_MergeDimEmployee.sql" />
+    <Build Include="Schema\Programmability\Stored Procedures\DW_MergeDimGeography.sql" />
+    <Build Include="Schema\Programmability\Stored Procedures\DW_MergeDimProduct.sql" />
+    <Build Include="Schema\Programmability\Stored Procedures\DW_MergeDimShipper.sql" />
+    <Build Include="Schema\Programmability\Stored Procedures\DW_MergeFactSales.sql" />
+    <Build Include="Schema\Programmability\Stored Procedures\GetLastPackageRowVersion.sql" />
+    <Build Include="Schema\Programmability\Stored Procedures\UpdateLastPackageRowVersion.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Scripts\DimDate.data.sql" />
+    <None Include="Scripts\PackageConfig.data.sql" />
+    <None Include="Scripts\PatchDimDate.data.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <PostDeploy Include="Scripts\Script.PostDeployment.sql" />
   </ItemGroup>
 </Project>

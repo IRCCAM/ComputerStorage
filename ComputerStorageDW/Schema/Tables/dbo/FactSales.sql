@@ -1,0 +1,20 @@
+﻿CREATE TABLE [dbo].[FactSales] (
+    [OrderID]          INT           NOT NULL,
+    [ProductKey]       INT           NOT NULL,
+    [CustomerKey]      INT           NOT NULL,
+    [EmployeeKey]      INT           NOT NULL,
+    [ShipperKey]       INT           NOT NULL,
+    [GeographyKey]     INT           NOT NULL,
+    [OrderDateKey]     INT           NOT NULL,
+    [RequiredDateKey]  INT           NULL,
+    [ShippedDateKey]   INT           NULL,
+    [Quantity]         SMALLINT      NOT NULL,
+    [UnitPrice]        MONEY         NOT NULL,
+    [Discount]         REAL          NOT NULL,
+    [LineTotal] AS ([Quantity] * [UnitPrice]) * (1 - [Discount]) PERSISTED,
+    [Freight]          MONEY         NULL,
+    [CreatedDate]      DATETIME      NULL,
+    [SourceRowVersion] BIGINT        NULL,
+    [RowHash]          VARCHAR(64)   NULL,
+    CONSTRAINT [PK_FactSales] PRIMARY KEY NONCLUSTERED ([OrderID], [ProductKey]) -- recomendado para hechos
+);
