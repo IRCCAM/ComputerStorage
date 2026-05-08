@@ -206,3 +206,4 @@ PackageConfig (control de versión)
 # Integrantes 
 - Ivan Rene Ccama Mamani
 - Ezequiel Gerstel Bodoha
+- Ana Belen Hidalgo Macias
