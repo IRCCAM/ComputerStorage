@@ -1,29 +1,28 @@
-﻿CREATE TABLE [dbo].[DimProduct] (
-    [ProductKey]          INT            IDENTITY(1,1) NOT NULL,
-    [ProductID_NK]        INT            NOT NULL,
-    [ProductName]         NVARCHAR(40)   NOT NULL,
-    [QuantityPerUnit]     NVARCHAR(20)   NULL,
-    [UnitPrice]           MONEY          NULL,
-    [UnitsInStock]        SMALLINT       NULL,
-    [UnitsOnOrder]        SMALLINT       NULL,
-    [ReorderLevel]        SMALLINT       NULL,
-    [Discontinued]        BIT            NOT NULL,
-    [CategoryID_NK]       INT            NOT NULL,
-    [CategoryName]        NVARCHAR(15)   NOT NULL,
-    [CategoryDescription] NVARCHAR(MAX)  NULL,
-    [SupplierID_NK]       INT            NOT NULL,
-    [SupplierCompanyName] NVARCHAR(40)   NOT NULL,
-    [SupplierContactName] NVARCHAR(30)   NULL,
-    [SupplierContactTitle]NVARCHAR(30)   NULL,
-    [SupplierCity]        NVARCHAR(15)   NULL,
-    [SupplierRegion]      NVARCHAR(15)   NULL,
-    [SupplierCountry]     NVARCHAR(15)   NULL,
-    [SupplierPhone]       NVARCHAR(24)   NULL,
-    [SupplierFax]         NVARCHAR(24)   NULL,
-    [PriceRange]          VARCHAR(20)    NULL,
-    [StockStatus]         VARCHAR(20)    NULL,
-    [IsActive]            BIT            NULL,
-    [CreatedDate]         DATETIME       NULL,
-    [UpdatedDate]         DATETIME       NULL,
-    CONSTRAINT [PK_DimProduct] PRIMARY KEY CLUSTERED ([ProductKey] ASC)
+﻿CREATE TABLE [dbo].[DimProduct]
+(
+    [ProductKey]           INT IDENTITY(1,1) NOT NULL,
+    [ProductID]            INT               NOT NULL,
+    [ProductName]          NVARCHAR(40)      NOT NULL,
+    [QuantityPerUnit]      NVARCHAR(20)      NULL,
+    [UnitPriceList]        MONEY             NULL,
+    [UnitsInStock]         SMALLINT          NULL,
+    [UnitsOnOrder]         SMALLINT          NULL,
+    [ReorderLevel]         SMALLINT          NULL,
+    [Discontinued]         BIT               NOT NULL,
+
+    [CategoryID]           INT               NULL,
+    [CategoryName]         NVARCHAR(15)      NULL,
+    [CategoryDescription]  NVARCHAR(MAX)     NULL,
+
+    [SupplierID]           INT               NULL,
+    [SupplierName]         NVARCHAR(40)      NULL,
+    [SupplierCity]         NVARCHAR(15)      NULL,
+    [SupplierRegion]       NVARCHAR(15)      NULL,
+    [SupplierCountry]      NVARCHAR(15)      NULL,
+
+    CONSTRAINT [PK_DimProduct]
+        PRIMARY KEY CLUSTERED ([ProductKey]),
+
+    CONSTRAINT [UQ_DimProduct_ProductID]
+        UNIQUE ([ProductID])
 );

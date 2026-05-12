@@ -4,69 +4,93 @@ CREATE PROCEDURE [dbo].[DW_MergeDimDate]
 AS
 BEGIN
     SET NOCOUNT ON;
-    
-    DECLARE @CurrentDate DATE = @StartDate;
-    DECLARE @DateKey INT;
-    
-    WHILE @CurrentDate <= @EndDate
+
+    IF @StartDate IS NULL OR @EndDate IS NULL OR @StartDate > @EndDate
     BEGIN
-        SET @DateKey = CONVERT(INT, FORMAT(@CurrentDate, 'yyyyMMdd'));
-        
-        MERGE INTO [dim].[DimDate] AS target
-        USING (
-            SELECT
-                @DateKey AS DateKey,
-                @CurrentDate AS FullDate,
-                YEAR(@CurrentDate) AS Year,
-                DATEPART(QUARTER, @CurrentDate) AS Quarter,
-                'Q' + CAST(DATEPART(QUARTER, @CurrentDate) AS VARCHAR) + ' ' + CAST(YEAR(@CurrentDate) AS VARCHAR) AS QuarterName,
-                MONTH(@CurrentDate) AS Month,
-                DATENAME(MONTH, @CurrentDate) AS MonthName,
-                DAY(@CurrentDate) AS DayOfMonth,
-                DATEPART(WEEKDAY, @CurrentDate) AS DayOfWeek,
-                DATENAME(WEEKDAY, @CurrentDate) AS DayName,
-                DATEPART(WEEK, @CurrentDate) AS WeekOfYear,
-                CASE WHEN DATEPART(WEEKDAY, @CurrentDate) IN (1,7) THEN 1 ELSE 0 END AS IsWeekend,
-                0 AS IsHoliday,
-                CASE WHEN MONTH(@CurrentDate) >= 7 THEN YEAR(@CurrentDate) + 1 ELSE YEAR(@CurrentDate) END AS FiscalYear,
-                CASE 
-                    WHEN MONTH(@CurrentDate) BETWEEN 7 AND 9 THEN 1
-                    WHEN MONTH(@CurrentDate) BETWEEN 10 AND 12 THEN 2
-                    WHEN MONTH(@CurrentDate) BETWEEN 1 AND 3 THEN 3
-                    ELSE 4
-                END AS FiscalQuarter
-        ) AS source
-        ON target.DateKey = source.DateKey
-        
-        WHEN MATCHED THEN
-            UPDATE SET
-                FullDate = source.FullDate,
-                Year = source.Year,
-                Quarter = source.Quarter,
-                QuarterName = source.QuarterName,
-                Month = source.Month,
-                MonthName = source.MonthName,
-                DayOfMonth = source.DayOfMonth,
-                DayOfWeek = source.DayOfWeek,
-                DayName = source.DayName,
-                WeekOfYear = source.WeekOfYear,
-                IsWeekend = source.IsWeekend,
-                IsHoliday = source.IsHoliday,
-                FiscalYear = source.FiscalYear,
-                FiscalQuarter = source.FiscalQuarter
-        
-        WHEN NOT MATCHED THEN
-            INSERT (
-                DateKey, FullDate, Year, Quarter, QuarterName,
-                Month, MonthName, DayOfMonth, DayOfWeek, DayName,
-                WeekOfYear, IsWeekend, IsHoliday, FiscalYear, FiscalQuarter
-            )
-            VALUES (
-                source.DateKey, source.FullDate, source.Year, source.Quarter, source.QuarterName,
-                source.Month, source.MonthName, source.DayOfMonth, source.DayOfWeek, source.DayName,
-                source.WeekOfYear, source.IsWeekend, source.IsHoliday, source.FiscalYear, source.FiscalQuarter
-            );
-        
-        SET @CurrentDate = DATEADD(DAY, 1, @CurrentDate);
-    END
+        THROW 50001, 'Rango de fechas invalido para DW_MergeDimDate.', 1;
+    END;
+
+    ;WITH DateCTE AS
+    (
+        SELECT @StartDate AS FullDate
+        UNION ALL
+        SELECT DATEADD(DAY, 1, FullDate)
+        FROM DateCTE
+        WHERE FullDate < @EndDate
+    )
+    MERGE INTO [dbo].[DimDate] AS target
+    USING
+    (
+        SELECT
+            CONVERT(INT, CONVERT(VARCHAR(8), d.FullDate, 112)) AS [DateKey],
+            d.FullDate,
+            DATEPART(DAY, d.FullDate) AS [Day],
+            DATEPART(MONTH, d.FullDate) AS [Month],
+            DATENAME(MONTH, d.FullDate) AS [MonthName],
+            DATEPART(QUARTER, d.FullDate) AS [Quarter],
+            DATEPART(YEAR, d.FullDate) AS [Year],
+            DATEPART(WEEK, d.FullDate) AS [WeekOfYear],
+            DATEPART(WEEKDAY, d.FullDate) AS [DayOfWeek],
+            DATENAME(WEEKDAY, d.FullDate) AS [DayName],
+            CASE WHEN DATEPART(WEEKDAY, d.FullDate) IN (1, 7) THEN 1 ELSE 0 END AS [IsWeekend]
+        FROM DateCTE d
+    ) AS source
+    ON target.[DateKey] = source.[DateKey]
+
+    WHEN MATCHED AND
+    (
+           target.[FullDate] <> source.[FullDate]
+        OR target.[Day] <> source.[Day]
+        OR target.[Month] <> source.[Month]
+        OR target.[MonthName] <> source.[MonthName]
+        OR target.[Quarter] <> source.[Quarter]
+        OR target.[Year] <> source.[Year]
+        OR target.[WeekOfYear] <> source.[WeekOfYear]
+        OR target.[DayOfWeek] <> source.[DayOfWeek]
+        OR target.[DayName] <> source.[DayName]
+        OR target.[IsWeekend] <> source.[IsWeekend]
+    ) THEN
+        UPDATE SET
+            [FullDate] = source.[FullDate],
+            [Day] = source.[Day],
+            [Month] = source.[Month],
+            [MonthName] = source.[MonthName],
+            [Quarter] = source.[Quarter],
+            [Year] = source.[Year],
+            [WeekOfYear] = source.[WeekOfYear],
+            [DayOfWeek] = source.[DayOfWeek],
+            [DayName] = source.[DayName],
+            [IsWeekend] = source.[IsWeekend]
+
+    WHEN NOT MATCHED BY TARGET THEN
+        INSERT
+        (
+            [DateKey],
+            [FullDate],
+            [Day],
+            [Month],
+            [MonthName],
+            [Quarter],
+            [Year],
+            [WeekOfYear],
+            [DayOfWeek],
+            [DayName],
+            [IsWeekend]
+        )
+        VALUES
+        (
+            source.[DateKey],
+            source.[FullDate],
+            source.[Day],
+            source.[Month],
+            source.[MonthName],
+            source.[Quarter],
+            source.[Year],
+            source.[WeekOfYear],
+            source.[DayOfWeek],
+            source.[DayName],
+            source.[IsWeekend]
+        )
+    OPTION (MAXRECURSION 0);
 END
+GO

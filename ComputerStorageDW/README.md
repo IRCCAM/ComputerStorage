@@ -7,7 +7,7 @@
 | Componente | Descripción |
 |------------|-------------|
 | **1 Tabla de Hechos** | `FactSales` - ventas por línea de orden |
-| **6 Tablas Dimensión** | Fecha, Cliente, Producto, Empleado, Transportista, Geografía |
+| **6 Tablas Dimensión** | Fecha, Cliente, Producto, Empleado, Transportista|
 
 ### ¿Por qué Star Schema?
 
@@ -64,7 +64,6 @@ NorthWindDW2/
 ?   ?   ??? DimProduct.sql
 ?   ?   ??? DimEmployee.sql
 ?   ?   ??? DimShipper.sql
-?   ?   ??? DimGeography.sql
 ?   ??? fact/ -- Hechos (1 archivo)
 ?       ??? FactSales.sql
 ??? Programmability/
@@ -72,7 +71,6 @@ NorthWindDW2/
 ?       ??? DW_MergeDimCustomer.sql
 ?       ??? DW_MergeDimDate.sql
 ?       ??? DW_MergeDimEmployee.sql
-?       ??? DW_MergeDimGeography.sql
 ?       ??? DW_MergeDimProduct.sql
 ?       ??? DW_MergeDimShipper.sql
 ?       ??? DW_MergeFactSales.sql
@@ -106,7 +104,6 @@ NorthWindDW2/
 - `DimProduct`: Productos con categoría y proveedor
 - `DimEmployee`: Empleados con jerarquía
 - `DimShipper`: Transportistas
-- `DimGeography`: Regiones y territorios
 
 ### Hechos (1 tabla)
 

@@ -1,28 +1,22 @@
-﻿CREATE TABLE [dbo].[DimEmployee] (
-    [EmployeeKey]      INT            IDENTITY(1,1) NOT NULL,
-    [EmployeeID_NK]    INT            NOT NULL,
-    [LastName]         NVARCHAR(20)   NOT NULL,
-    [FirstName]        NVARCHAR(10)   NOT NULL,
-    [FullName]         NVARCHAR(31)   NOT NULL,
-    [Title]            NVARCHAR(30)   NULL,
-    [TitleOfCourtesy]  NVARCHAR(25)   NULL,
-    [BirthDate]        DATE           NULL,
-    [HireDate]         DATE           NULL,
-    [Address]          NVARCHAR(60)   NULL,
-    [City]             NVARCHAR(15)   NULL,
-    [Region]           NVARCHAR(15)   NULL,
-    [PostalCode]       NVARCHAR(10)   NULL,
-    [Country]          NVARCHAR(15)   NULL,
-    [HomePhone]        NVARCHAR(24)   NULL,
-    [Extension]        NVARCHAR(4)    NULL,
-    [Notes]            NVARCHAR(MAX)  NULL,
-    [ReportsTo_NK]     INT            NULL,
-    [ManagerName]      NVARCHAR(31)   NULL,
-    [HierarchyLevel]   INT            NULL,
-    [Age]              INT            NULL,
-    [YearsOfExperience]INT            NULL,
-    [IsActive]         BIT            NULL,
-    [CreatedDate]      DATETIME       NULL,
-    [UpdatedDate]      DATETIME       NULL,
-    CONSTRAINT [PK_DimEmployee] PRIMARY KEY CLUSTERED ([EmployeeKey] ASC)
+﻿CREATE TABLE [dbo].[DimEmployee]
+(
+    [EmployeeKey]          INT IDENTITY(1,1) NOT NULL,
+    [EmployeeID]           INT               NOT NULL,
+    [FullName]             NVARCHAR(60)      NOT NULL,
+    [FirstName]            NVARCHAR(10)      NOT NULL,
+    [LastName]             NVARCHAR(20)      NOT NULL,
+    [Title]                NVARCHAR(30)      NULL,
+    [TitleOfCourtesy]      NVARCHAR(25)      NULL,
+    [BirthDate]            DATE              NULL,
+    [HireDate]             DATE              NULL,
+    [City]                 NVARCHAR(15)      NULL,
+    [Region]               NVARCHAR(15)      NULL,
+    [Country]              NVARCHAR(15)      NULL,
+    [ReportsToEmployeeID]  INT               NULL,
+
+    CONSTRAINT [PK_DimEmployee]
+        PRIMARY KEY CLUSTERED ([EmployeeKey]),
+
+    CONSTRAINT [UQ_DimEmployee_EmployeeID]
+        UNIQUE ([EmployeeID])
 );

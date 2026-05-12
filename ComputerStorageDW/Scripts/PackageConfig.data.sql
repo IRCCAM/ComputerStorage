@@ -1,55 +1,47 @@
 IF NOT EXISTS(SELECT TOP(1) 1
               FROM [dbo].[PackageConfig]
-              WHERE [PackageName] = 'DW_MergeDimCustomer')
-BEGIN
-    INSERT [dbo].[PackageConfig] ([PackageName], [LastRowVersion]) VALUES ('DW_MergeDimCustomer', 0)
-END
+			  WHERE [TableName] = 'Customer')
+ BEGIN
+	INSERT [dbo].[PackageConfig] ([TableName], [LastRowVersion]) VALUES ('Customer', 0)
+ END
 GO
 
 IF NOT EXISTS(SELECT TOP(1) 1
               FROM [dbo].[PackageConfig]
-              WHERE [PackageName] = 'DW_MergeDimDate')
-BEGIN
-    INSERT [dbo].[PackageConfig] ([PackageName], [LastRowVersion]) VALUES ('DW_MergeDimDate', 0)
-END
+			  WHERE [TableName] = 'Employee')
+ BEGIN
+	INSERT [dbo].[PackageConfig] ([TableName], [LastRowVersion]) VALUES ('Employee', 0)
+ END
 GO
 
 IF NOT EXISTS(SELECT TOP(1) 1
               FROM [dbo].[PackageConfig]
-              WHERE [PackageName] = 'DW_MergeDimEmployee')
-BEGIN
-    INSERT [dbo].[PackageConfig] ([PackageName], [LastRowVersion]) VALUES ('DW_MergeDimEmployee', 0)
-END
+			  WHERE [TableName] = 'Product')
+ BEGIN
+	INSERT [dbo].[PackageConfig] ([TableName], [LastRowVersion]) VALUES ('Product', 0)
+ END
 GO
 
 IF NOT EXISTS(SELECT TOP(1) 1
               FROM [dbo].[PackageConfig]
-              WHERE [PackageName] = 'DW_MergeDimGeography')
-BEGIN
-    INSERT [dbo].[PackageConfig] ([PackageName], [LastRowVersion]) VALUES ('DW_MergeDimGeography', 0)
-END
+			  WHERE [TableName] = 'Shipper')
+ BEGIN
+	INSERT [dbo].[PackageConfig] ([TableName], [LastRowVersion]) VALUES ('Shipper', 0)
+ END
 GO
 
 IF NOT EXISTS(SELECT TOP(1) 1
               FROM [dbo].[PackageConfig]
-              WHERE [PackageName] = 'DW_MergeDimProduct')
-BEGIN
-    INSERT [dbo].[PackageConfig] ([PackageName], [LastRowVersion]) VALUES ('DW_MergeDimProduct', 0)
-END
+			  WHERE [TableName] = 'Sales')
+ BEGIN
+	INSERT [dbo].[PackageConfig] ([TableName], [LastRowVersion]) VALUES ('Sales', 0)
+ END
 GO
 
 IF NOT EXISTS(SELECT TOP(1) 1
               FROM [dbo].[PackageConfig]
-              WHERE [PackageName] = 'DW_MergeDimShipper')
-BEGIN
-    INSERT [dbo].[PackageConfig] ([PackageName], [LastRowVersion]) VALUES ('DW_MergeDimShipper', 0)
-END
-GO
-
-IF NOT EXISTS(SELECT TOP(1) 1
-              FROM [dbo].[PackageConfig]
-              WHERE [PackageName] = 'DW_MergeFactSales')
-BEGIN
-    INSERT [dbo].[PackageConfig] ([PackageName], [LastRowVersion]) VALUES ('DW_MergeFactSales', 0)
-END
+			  WHERE [TableName] = 'ShipLocation')
+ BEGIN
+	INSERT [dbo].[PackageConfig] ([TableName], [LastRowVersion]) VALUES ('ShipLocation', 0)
+ END
 GO

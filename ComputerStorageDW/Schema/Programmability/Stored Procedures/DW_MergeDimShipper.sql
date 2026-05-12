@@ -1,50 +1,40 @@
 CREATE PROCEDURE [dbo].[DW_MergeDimShipper]
-    @LastRowVersion BIGINT,
-    @CurrentRowVersion BIGINT OUTPUT
 AS
 BEGIN
     SET NOCOUNT ON;
-    
-    -- Obtener el máximo RowVersion de staging
-    SELECT @CurrentRowVersion = ISNULL(MAX(RowVersion), @LastRowVersion)
-    FROM [staging].[Shippers];
-    
-    -- MERGE de transportistas
-    MERGE INTO [dim].[DimShipper] AS target
-    USING (
-        SELECT 
-            ShipperID AS ShipperID_NK,
-            CompanyName,
-            Phone,
-            CASE 
-                WHEN CompanyName LIKE '%Speedy%' THEN 'Express'
-                WHEN CompanyName LIKE '%United%' THEN 'Ground'
-                ELSE 'Standard'
-            END AS ShippingType,
-            NULL AS AvgDeliveryDays,
-            1 AS IsActive,
-            GETDATE() AS CreatedDate,
-            GETDATE() AS UpdatedDate,
-            ROW_NUMBER() OVER (PARTITION BY ShipperID ORDER BY ModifiedDate DESC) AS rn
-        FROM [staging].[Shippers]
-        WHERE RowVersion > @LastRowVersion
+
+    MERGE INTO [dbo].[DimShipper] AS target
+    USING
+    (
+        SELECT
+            s.[ShipperID],
+            s.[CompanyName],
+            s.[Phone]
+        FROM [staging].[Shipper] s
     ) AS source
-    ON target.ShipperID_NK = source.ShipperID_NK AND source.rn = 1
-    
-    WHEN MATCHED AND target.UpdatedDate < source.UpdatedDate THEN
+    ON target.[ShipperID] = source.[ShipperID]
+
+    WHEN MATCHED AND
+    (
+           ISNULL(target.[CompanyName], N'') <> ISNULL(source.[CompanyName], N'')
+        OR ISNULL(target.[Phone], N'') <> ISNULL(source.[Phone], N'')
+    ) THEN
         UPDATE SET
-            CompanyName = source.CompanyName,
-            Phone = source.Phone,
-            ShippingType = source.ShippingType,
-            UpdatedDate = source.UpdatedDate
-    
-    WHEN NOT MATCHED AND source.rn = 1 THEN
-        INSERT (
-            ShipperID_NK, CompanyName, Phone, ShippingType, AvgDeliveryDays,
-            IsActive, CreatedDate, UpdatedDate
+            [CompanyName] = source.[CompanyName],
+            [Phone] = source.[Phone]
+
+    WHEN NOT MATCHED BY TARGET THEN
+        INSERT
+        (
+            [ShipperID],
+            [CompanyName],
+            [Phone]
         )
-        VALUES (
-            source.ShipperID_NK, source.CompanyName, source.Phone, source.ShippingType, source.AvgDeliveryDays,
-            source.IsActive, source.CreatedDate, source.UpdatedDate
+        VALUES
+        (
+            source.[ShipperID],
+            source.[CompanyName],
+            source.[Phone]
         );
 END
+GO

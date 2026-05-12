@@ -1,101 +1,118 @@
 CREATE PROCEDURE [dbo].[DW_MergeFactSales]
-    @LastRowVersion BIGINT,
-    @CurrentRowVersion BIGINT OUTPUT
 AS
 BEGIN
     SET NOCOUNT ON;
-    
-    -- Obtener el máximo RowVersion combinado de Orders y OrderDetails
-    SELECT @CurrentRowVersion = ISNULL(MAX(RowVersion), @LastRowVersion)
-    FROM (
-        SELECT RowVersion FROM [staging].[Orders]
-        UNION ALL
-        SELECT RowVersion FROM [staging].[OrderDetails]
-    ) AS all_versions;
-    
-    -- MERGE de hechos de ventas
-    MERGE INTO [fact].[FactSales] AS target
-    USING (
-        SELECT 
-            od.OrderID,
-            dp.ProductKey,
-            dc.CustomerKey,
-            de.EmployeeKey,
-            ds.ShipperKey,
-            dg.GeographyKey,
-            dd_order.DateKey AS OrderDateKey,
-            dd_required.DateKey AS RequiredDateKey,
-            dd_shipped.DateKey AS ShippedDateKey,
-            od.Quantity,
-            od.UnitPrice,
-            od.Discount,
-            o.Freight,
-            GETDATE() AS CreatedDate,
-            o.RowVersion AS SourceRowVersion,
-            NULL AS RowHash,
-            ROW_NUMBER() OVER (PARTITION BY od.OrderID, od.ProductID ORDER BY o.ModifiedDate DESC) AS rn
-        FROM [staging].[OrderDetails] od
-        INNER JOIN [staging].[Orders] o ON od.OrderID = o.OrderID
-        INNER JOIN [dim].[DimProduct] dp ON od.ProductID = dp.ProductID_NK
-        INNER JOIN [dim].[DimCustomer] dc ON o.CustomerID = dc.CustomerID_NK
-        INNER JOIN [dim].[DimEmployee] de ON o.EmployeeID = de.EmployeeID_NK
-        INNER JOIN [dim].[DimShipper] ds ON o.ShipVia = ds.ShipperID_NK
-        INNER JOIN [dim].[DimDate] dd_order ON CAST(o.OrderDate AS DATE) = dd_order.FullDate
-        LEFT JOIN [dim].[DimDate] dd_required ON CAST(o.RequiredDate AS DATE) = dd_required.FullDate
-        LEFT JOIN [dim].[DimDate] dd_shipped ON CAST(o.ShippedDate AS DATE) = dd_shipped.FullDate
-        LEFT JOIN [dim].[DimGeography] dg ON o.ShipCountry = dg.TerritoryID_NK  -- Simplificado, ajusta según lógica real
-        WHERE o.RowVersion > @LastRowVersion OR od.RowVersion > @LastRowVersion
-    ) AS source
-    ON target.OrderID = source.OrderID 
-       AND target.ProductKey = source.ProductKey 
-       AND source.rn = 1
-    
-    WHEN MATCHED AND target.SourceRowVersion < source.SourceRowVersion THEN
+    EXEC [dbo].[DW_MergeDimShipLocation];
+
+    ;WITH SourceSales AS
+    (
+        SELECT
+            s.[OrderID],
+            s.[ProductID],
+            dOrder.[DateKey] AS [OrderDateKey],
+            dRequired.[DateKey] AS [RequiredDateKey],
+            dShipped.[DateKey] AS [ShippedDateKey],
+            c.[CustomerKey],
+            e.[EmployeeKey],
+            p.[ProductKey],
+            sh.[ShipperKey],
+            sl.[ShipLocationKey],
+            s.[UnitPrice],
+            s.[Quantity],
+            s.[Discount],
+            s.[Freight]
+        FROM [staging].[Sales] s
+        INNER JOIN [dbo].[DimCustomer] c
+            ON c.[CustomerID] = s.[CustomerID]
+        INNER JOIN [dbo].[DimEmployee] e
+            ON e.[EmployeeID] = s.[EmployeeID]
+        INNER JOIN [dbo].[DimProduct] p
+            ON p.[ProductID] = s.[ProductID]
+        LEFT JOIN [dbo].[DimShipper] sh
+            ON sh.[ShipperID] = s.[ShipVia]
+        INNER JOIN [dbo].[DimDate] dOrder
+            ON dOrder.[FullDate] = CAST(s.[OrderDate] AS DATE)
+        LEFT JOIN [dbo].[DimDate] dRequired
+            ON dRequired.[FullDate] = CAST(s.[RequiredDate] AS DATE)
+        LEFT JOIN [dbo].[DimDate] dShipped
+            ON dShipped.[FullDate] = CAST(s.[ShippedDate] AS DATE)
+        LEFT JOIN [dbo].[DimShipLocation] sl
+            ON ISNULL(sl.[ShipName], N'') = ISNULL(s.[ShipName], N'')
+           AND ISNULL(sl.[ShipAddress], N'') = ISNULL(s.[ShipAddress], N'')
+           AND ISNULL(sl.[ShipCity], N'') = ISNULL(s.[ShipCity], N'')
+           AND ISNULL(sl.[ShipRegion], N'') = ISNULL(s.[ShipRegion], N'')
+           AND ISNULL(sl.[ShipPostalCode], N'') = ISNULL(s.[ShipPostalCode], N'')
+           AND ISNULL(sl.[ShipCountry], N'') = ISNULL(s.[ShipCountry], N'')
+    )
+    MERGE INTO [dbo].[FactSales] AS target
+    USING SourceSales AS source
+    ON target.[OrderID] = source.[OrderID]
+       AND target.[ProductID] = source.[ProductID]
+
+    WHEN MATCHED AND
+    (
+           ISNULL(target.[OrderDateKey], 0) <> ISNULL(source.[OrderDateKey], 0)
+        OR ISNULL(target.[RequiredDateKey], 0) <> ISNULL(source.[RequiredDateKey], 0)
+        OR ISNULL(target.[ShippedDateKey], 0) <> ISNULL(source.[ShippedDateKey], 0)
+        OR target.[CustomerKey] <> source.[CustomerKey]
+        OR target.[EmployeeKey] <> source.[EmployeeKey]
+        OR target.[ProductKey] <> source.[ProductKey]
+        OR ISNULL(target.[ShipperKey], 0) <> ISNULL(source.[ShipperKey], 0)
+        OR ISNULL(target.[ShipLocationKey], 0) <> ISNULL(source.[ShipLocationKey], 0)
+        OR target.[UnitPrice] <> source.[UnitPrice]
+        OR target.[Quantity] <> source.[Quantity]
+        OR target.[Discount] <> source.[Discount]
+        OR ISNULL(target.[Freight], 0) <> ISNULL(source.[Freight], 0)
+    ) THEN
         UPDATE SET
-            CustomerKey = source.CustomerKey,
-            EmployeeKey = source.EmployeeKey,
-            ShipperKey = source.ShipperKey,
-            GeographyKey = source.GeographyKey,
-            OrderDateKey = source.OrderDateKey,
-            RequiredDateKey = source.RequiredDateKey,
-            ShippedDateKey = source.ShippedDateKey,
-            Quantity = source.Quantity,
-            UnitPrice = source.UnitPrice,
-            Discount = source.Discount,
-            Freight = source.Freight,
-            CreatedDate = source.CreatedDate,
-            SourceRowVersion = source.SourceRowVersion
-    
-    WHEN NOT MATCHED AND source.rn = 1 THEN
-        INSERT (
-            OrderID, ProductKey, CustomerKey, EmployeeKey, ShipperKey, GeographyKey,
-            OrderDateKey, RequiredDateKey, ShippedDateKey, Quantity, UnitPrice,
-            Discount, Freight, CreatedDate, SourceRowVersion, RowHash
+            [OrderDateKey] = source.[OrderDateKey],
+            [RequiredDateKey] = source.[RequiredDateKey],
+            [ShippedDateKey] = source.[ShippedDateKey],
+            [CustomerKey] = source.[CustomerKey],
+            [EmployeeKey] = source.[EmployeeKey],
+            [ProductKey] = source.[ProductKey],
+            [ShipperKey] = source.[ShipperKey],
+            [ShipLocationKey] = source.[ShipLocationKey],
+            [UnitPrice] = source.[UnitPrice],
+            [Quantity] = source.[Quantity],
+            [Discount] = source.[Discount],
+            [Freight] = source.[Freight],
+            [LoadDate] = SYSUTCDATETIME()
+
+    WHEN NOT MATCHED BY TARGET THEN
+        INSERT
+        (
+            [OrderID],
+            [ProductID],
+            [OrderDateKey],
+            [RequiredDateKey],
+            [ShippedDateKey],
+            [CustomerKey],
+            [EmployeeKey],
+            [ProductKey],
+            [ShipperKey],
+            [ShipLocationKey],
+            [UnitPrice],
+            [Quantity],
+            [Discount],
+            [Freight]
         )
-        VALUES (
-            source.OrderID, source.ProductKey, source.CustomerKey, source.EmployeeKey, source.ShipperKey, source.GeographyKey,
-            source.OrderDateKey, source.RequiredDateKey, source.ShippedDateKey, source.Quantity, source.UnitPrice,
-            source.Discount, source.Freight, source.CreatedDate, source.SourceRowVersion, source.RowHash
+        VALUES
+        (
+            source.[OrderID],
+            source.[ProductID],
+            source.[OrderDateKey],
+            source.[RequiredDateKey],
+            source.[ShippedDateKey],
+            source.[CustomerKey],
+            source.[EmployeeKey],
+            source.[ProductKey],
+            source.[ShipperKey],
+            source.[ShipLocationKey],
+            source.[UnitPrice],
+            source.[Quantity],
+            source.[Discount],
+            source.[Freight]
         );
-        
-    -- Actualizar DimCustomer con FirstOrderDate, LastOrderDate, TotalOrders, LifetimeValue después del MERGE
-    UPDATE [dim].[DimCustomer]
-    SET 
-        FirstOrderDate = stats.FirstOrderDate,
-        LastOrderDate = stats.LastOrderDate,
-        TotalOrders = stats.TotalOrders,
-        LifetimeValue = stats.LifetimeValue
-    FROM (
-        SELECT 
-            c.CustomerKey,
-            MIN(od.FullDate) AS FirstOrderDate,
-            MAX(od.FullDate) AS LastOrderDate,
-            COUNT(DISTINCT fs.OrderID) AS TotalOrders,
-            SUM(fs.LineTotal) AS LifetimeValue
-        FROM [fact].[FactSales] fs
-        INNER JOIN [dim].[DimCustomer] c ON fs.CustomerKey = c.CustomerKey
-        INNER JOIN [dim].[DimDate] od ON fs.OrderDateKey = od.DateKey
-        GROUP BY c.CustomerKey
-    ) stats
-    WHERE [dim].[DimCustomer].CustomerKey = stats.CustomerKey;
 END
+GO
