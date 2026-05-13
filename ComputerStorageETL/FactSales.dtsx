@@ -5,14 +5,14 @@
   DTS:CreationName="Microsoft.Package"
   DTS:CreatorComputerName="IVANLAPTOP"
   DTS:CreatorName="IVANLAPTOP\Ivan"
-  DTS:DTSID="{8CDEC09E-705F-4B10-B36C-6358301B7CC4}"
+  DTS:DTSID="{99C9A0DA-9B23-4E68-B011-1D59E392619E}"
   DTS:ExecutableType="Microsoft.Package"
   DTS:LastModifiedProductVersion="17.0.1016.0"
   DTS:LocaleID="2058"
-  DTS:ObjectName="Package1"
+  DTS:ObjectName="FactSales"
   DTS:PackageType="5"
-  DTS:VersionBuild="1"
-  DTS:VersionGUID="{29B93BEE-75FE-49AF-9613-262DC2812657}">
+  DTS:VersionBuild="2"
+  DTS:VersionGUID="{308E8C98-6126-4A16-89FF-FCC4A3D5B7C7}">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
   <DTS:Variables>
