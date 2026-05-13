@@ -7,6 +7,8 @@ AS
 BEGIN
     SELECT p.[ProductID]
         ,p.[ProductName]
+        ,p.[SupplierID]
+        ,p.[CategoryID]
         ,s.[CompanyName]
         ,c.[CategoryName]
         ,p.[QuantityPerUnit]

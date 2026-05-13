@@ -1,4 +1,4 @@
-CREATE TABLE [sales].[employees](
+CREATE TABLE [sales].[employees] (
     [EmployeeID]      INT            IDENTITY(1,1) NOT NULL,
     [LastName]        NVARCHAR(20)   NOT NULL,
     [FirstName]       NVARCHAR(10)   NOT NULL,
@@ -13,7 +13,7 @@ CREATE TABLE [sales].[employees](
     [Country]         NVARCHAR(15)   NULL,
     [HomePhone]       NVARCHAR(24)   NULL,
     [Extension]       NVARCHAR(4)    NULL,
-    [Photo]           IMAGE          NULL,
+    [Photo]           VARBINARY(MAX) NULL,
     [Notes]           NVARCHAR(MAX)  NULL,
     [ReportsTo]       INT            NULL,
     [PhotoPath]       NVARCHAR(255)  NULL,
@@ -21,7 +21,15 @@ CREATE TABLE [sales].[employees](
     CONSTRAINT [PK_employees] PRIMARY KEY CLUSTERED ([EmployeeID] ASC)
 );
 GO
-
-CREATE NONCLUSTERED INDEX [IX_employees_LastName] ON [dbo].[employees]([LastName] ASC);
-CREATE NONCLUSTERED INDEX [IX_employees_PostalCode] ON [dbo].[employees]([PostalCode] ASC);
+CREATE NONCLUSTERED INDEX [IX_employees_LastName]
+    ON [sales].[employees] ([LastName] ASC);
+GO
+CREATE NONCLUSTERED INDEX [IX_employees_PostalCode]
+    ON [sales].[employees] ([PostalCode] ASC);
+GO
+-- FK: autorreferencia jerarquía de empleados
+ALTER TABLE [sales].[employees]
+    ADD CONSTRAINT [FK_employees_employees]
+    FOREIGN KEY ([ReportsTo])
+    REFERENCES [sales].[employees] ([EmployeeID]);
 GO

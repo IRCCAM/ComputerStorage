@@ -67,7 +67,6 @@
   <ItemGroup>
     <Build Include="Schema\Tables\categories.sql" />
     <Build Include="Schema\Tables\customers.sql" />
-    <Build Include="Schema\Tables\customerdemographics.sql" />
     <Build Include="Schema\Tables\employeeterritories.sql" />
     <Build Include="Schema\Tables\employees.sql" />
     <Build Include="Schema\Tables\orderdetails.sql" />
@@ -91,6 +90,7 @@
     <Build Include="Schema\Programmability\Stored Procedures\SalesByYear.sql" />
     <Build Include="Schema\Programmability\Stored Procedures\SalesByCategory.sql" />
     <Build Include="Schema\Programmability\Stored Procedures\TenMostExpensiveProducts.sql" />
+    <Build Include="GetCategoryChangesByRowVersion.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Scripts\categories.data.sql" />

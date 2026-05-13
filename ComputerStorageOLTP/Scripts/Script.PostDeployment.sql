@@ -17,7 +17,6 @@ Post-Deployment Script Template
 :r .\suppliers.data.sql
 :r .\shippers.data.sql
 :r .\customers.data.sql
-:r .\customerdemographics.data.sql
 :r .\employees.data.sql
 :r .\employeeterritories.data.sql
 :r .\products.data.sql

@@ -1,4 +1,4 @@
-CREATE TABLE [production].[suppliers](
+CREATE TABLE [production].[suppliers] (
     [SupplierID]   INT            IDENTITY(1,1) NOT NULL,
     [CompanyName]  NVARCHAR(40)   NOT NULL,
     [ContactName]  NVARCHAR(30)   NULL,
@@ -14,8 +14,4 @@ CREATE TABLE [production].[suppliers](
     [rowversion]   ROWVERSION     NULL,
     CONSTRAINT [PK_suppliers] PRIMARY KEY CLUSTERED ([SupplierID] ASC)
 );
-GO
-
-CREATE NONCLUSTERED INDEX [IX_suppliers_CompanyName] ON [dbo].[suppliers]([CompanyName] ASC);
-CREATE NONCLUSTERED INDEX [IX_suppliers_PostalCode] ON [dbo].[suppliers]([PostalCode] ASC);
 GO
