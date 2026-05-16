@@ -17,6 +17,11 @@ GO
 DELETE FROM [sales].[customers];
 GO
 
+UPDATE [sales].[employees]
+SET [ReportsTo] = NULL
+WHERE [ReportsTo] IS NOT NULL;
+GO
+
 DELETE FROM [sales].[employees];
 GO
 DBCC CHECKIDENT ('[sales].[employees]', RESEED);
