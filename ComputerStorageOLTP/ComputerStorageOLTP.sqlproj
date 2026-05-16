@@ -91,6 +91,7 @@
     <Build Include="Schema\Programmability\Stored Procedures\SalesByCategory.sql" />
     <Build Include="Schema\Programmability\Stored Procedures\TenMostExpensiveProducts.sql" />
     <Build Include="GetCategoryChangesByRowVersion.sql" />
+    <Build Include="Schema\Programmability\Stored Procedures\GetShipLocationChangesByRowVersion.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Scripts\categories.data.sql" />
